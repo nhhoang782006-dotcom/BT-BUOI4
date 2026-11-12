@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#09111c" />
+    <meta
+      name="description"
+      content="Trò chơi JavaScript đánh theo lượt giữa Captain America và Rồng Già."
+    />
+    <title>Chiến trường — Captain America</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script src="game.js" defer></script>
+  </head>
+  <body>
+    <main class="game-shell">
+      <header class="masthead">
+        <div class="masthead-title">
+          <p class="eyebrow"><span class="eyebrow-mark" aria-hidden="true"></span> Avenger Initiative / 01</p>
+          <h1>CHIẾN<br class="mobile-break" /> TRƯỜNG</h1>
+        </div>
+        <div class="student-record" aria-label="Thông tin sinh viên">
+          <span class="record-label">HỒ SƠ CHIẾN BINH</span>
+          <span id="student-name" class="record-name">Nguyễn Huy Hoàng</span>
+          <span class="record-id">MSSV <span id="student-id">31241026670</span></span>
+        </div>
+      </header>
+
+      <section id="setup-screen" class="setup-screen" aria-labelledby="setup-title">
+        <div class="setup-art">
+          <img
+            class="hero-art"
+            src="assets/anhhung.webp"
+            alt="Captain America cầm khiên trên nền thành phố khói lửa"
+            width="1312"
+            height="1879"
+          />
+          <div class="art-caption" aria-hidden="true">
+            <span>MỘT NGƯỜI<br />ĐỨNG VỮNG.</span>
+            <span class="art-index">BROOKLYN<br />08:42 PM</span>
+          </div>
+          <div class="art-frame" aria-hidden="true"></div>
+        </div>
+
+        <div class="briefing-panel">
+          <p class="eyebrow"><span class="status-dot"></span> HỒ SƠ NHIỆM VỤ · 001</p>
+          <h2 id="setup-title" tabindex="-1">Một lá chắn.<br /><span>Một trận chiến.</span></h2>
+          <p class="briefing-copy">Rồng Già đã xuất hiện. Chọn phong cách chiến đấu và bảo vệ thành phố đến cùng.</p>
+
+          <form id="setup-form" novalidate>
+            <label class="field-label" for="hero-class">PHONG CÁCH CHIẾN ĐẤU</label>
+            <select id="hero-class" name="hero-class" class="class-select">
+              <option value="chienbinh">Chiến binh · sức mạnh áp đảo</option>
+              <option value="satthu">Sát thủ · nhanh nhẹn, chí mạng</option>
+              <option value="thosan">Thợ săn · trí tuệ sắc bén</option>
+            </select>
+            <p id="class-description" class="class-description" aria-live="polite"></p>
+            <p id="setup-error" class="setup-error" role="alert" hidden></p>
+            <button id="start-button" class="primary-button" type="submit">
+              <span>VÀO TRẬN</span>
+              <span class="button-arrow" aria-hidden="true">↗</span>
+            </button>
+          </form>
+
+          <div class="briefing-footer">
+            <span>01 — 03</span>
+            <span>CHỌN LỚP ANH HÙNG</span>
+            <span>JS RPG</span>
+          </div>
+        </div>
+      </section>
+
+      <section id="battle-screen" class="battle-screen" aria-labelledby="battle-title" hidden>
+        <div class="battle-heading">
+          <div>
+            <p class="eyebrow"><span class="status-dot"></span> THÀNH PHỐ ĐANG GẶP NGUY HIỂM</p>
+            <h2 id="battle-title" tabindex="-1">GIỮ VỮNG <span>PHÒNG TUYẾN</span></h2>
+          </div>
+          <div class="turn-counter">LƯỢT <span id="turn-count">01</span></div>
+        </div>
+
+        <div class="battlefield">
+          <article id="hero-card" class="combatant hero-combatant">
+            <div class="portrait portrait-hero">
+              <img
+                src="assets/anhhung.webp"
+                alt="Captain America trong trận chiến"
+                width="1312"
+                height="1879"
+              />
+              <span class="portrait-tag"><span class="status-dot"></span> ĐỒNG MINH</span>
+              <span class="portrait-number" aria-hidden="true">01</span>
+            </div>
+            <div class="combatant-details">
+              <div class="combatant-title">
+                <div>
+                  <p id="display-hero-class" class="combatant-kicker">CHIẾN BINH</p>
+                  <h3 id="display-hero-name">CAPTAIN AMERICA</h3>
+                </div>
+                <svg class="shield-mark" viewBox="0 0 48 48" aria-hidden="true">
+                  <circle cx="24" cy="24" r="22" fill="none" stroke="currentColor" stroke-width="2" />
+                  <circle cx="24" cy="24" r="14" fill="none" stroke="currentColor" stroke-width="2" />
+                  <circle cx="24" cy="24" r="6" fill="none" stroke="currentColor" stroke-width="2" />
+                  <path d="m24 18 1.8 4.2 4.6.3-3.5 3 1.1 4.5-4-2.4-4 2.4 1.1-4.5-3.5-3 4.6-.3z" fill="currentColor" />
+                </svg>
+              </div>
+              <div class="health-heading">
+                <span>SỨC KHỎE <span class="unit">HP</span></span>
+                <span id="hero-hp-label" class="health-value">105 / 105</span>
+              </div>
+              <div
+                id="hero-hp-track"
+                class="health-track health-track-hero"
+                role="progressbar"
+                aria-label="Máu Captain America"
+                aria-valuemin="0"
+                aria-valuemax="105"
+                aria-valuenow="105"
+              ><span id="hero-hp-bar" class="health-bar"></span></div>
+              <dl class="stat-line" aria-label="Chỉ số anh hùng">
+                <div><dt>STR</dt><dd id="hero-str">78</dd></div>
+                <div><dt>AGI</dt><dd id="hero-agi">111</dd></div>
+                <div><dt>INT</dt><dd id="hero-int">48</dd></div>
+              </dl>
+              <p class="evasion-note">Khả năng né đòn tối đa 80%</p>
+            </div>
+          </article>
+
+          <div class="combat-controls">
+            <div class="versus-mark" aria-hidden="true"><span></span>VS<span></span></div>
+            <button id="attack-button" class="attack-button" type="button" aria-label="Tấn công Rồng Già">
+              <svg viewBox="0 0 32 32" aria-hidden="true">
+                <path d="m17.7 2-2.1 10.6H8.2L19.1 30l-1.4-12h7.1z" fill="currentColor" />
+              </svg>
+              <span id="attack-label">TẤN CÔNG</span>
+            </button>
+            <span class="turn-hint">CHỜ LƯỢT CỦA BẠN</span>
+          </div>
+
+          <article id="dragon-card" class="combatant dragon-combatant">
+            <div class="portrait portrait-dragon">
+              <div class="dragon-illustration" role="img" aria-label="Minh họa Rồng Già">
+                <svg viewBox="0 0 300 300" fill="none" aria-hidden="true">
+                  <path d="M42 247c24-26 24-55 3-81 33 5 55 22 63 48 7-29-2-54-29-76 48 1 77 23 88 62 19-34 14-71-15-110 51 17 81 51 91 103 5 22-4 46-26 71l-29 35H77z" fill="#202833" />
+                  <path d="M111 186c32 1 57-11 77-37l39 9-22 17 27 8-43 13-21 34-34 4-14 36H75l21-32c-9-19-4-37 15-52Z" fill="#35404a" />
+                  <path d="m188 153 24-18 27 7-14 18M222 197l30 6-21 11M146 233l-9 37" stroke="#bd3c3a" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+                  <circle cx="214" cy="178" r="3" fill="#e7b56b" />
+                  <path d="M60 260h182" stroke="#66717c" stroke-width="2" />
+                  <path d="M87 275h128" stroke="#3e4955" stroke-width="1" />
+                </svg>
+              </div>
+              <span class="portrait-tag dragon-tag"><span class="status-dot status-dot-danger"></span> ĐỐI THỦ</span>
+              <span class="portrait-number" aria-hidden="true">02</span>
+            </div>
+            <div class="combatant-details dragon-details">
+              <div class="combatant-title">
+                <div>
+                  <p class="combatant-kicker">TRÙM CUỐI · CẤP 60</p>
+                  <h3>RỒNG GIÀ</h3>
+                </div>
+                <span class="dragon-emblem" aria-hidden="true">✦</span>
+              </div>
+              <div class="health-heading">
+                <span>SỨC KHỎE <span class="unit">HP</span></span>
+                <span id="dragon-hp-label" class="health-value">600 / 600</span>
+              </div>
+              <div
+                id="dragon-hp-track"
+                class="health-track health-track-dragon"
+                role="progressbar"
+                aria-label="Máu Rồng Già"
+                aria-valuemin="0"
+                aria-valuemax="600"
+                aria-valuenow="600"
+              ><span id="dragon-hp-bar" class="health-bar"></span></div>
+              <dl class="stat-line" aria-label="Chỉ số Rồng Già">
+                <div><dt>STR</dt><dd>100</dd></div>
+                <div><dt>AGI</dt><dd>15</dd></div>
+                <div><dt>INT</dt><dd>80</dd></div>
+              </dl>
+              <p class="evasion-note">Đòn chí mạng gây sát thương gấp đôi</p>
+            </div>
+          </article>
+        </div>
+
+        <section class="combat-journal" aria-labelledby="journal-title">
+          <div class="journal-heading">
+            <div>
+              <p class="eyebrow">TƯỜNG THUẬT TRỰC TIẾP</p>
+              <h3 id="journal-title">Nhật ký chiến đấu</h3>
+            </div>
+            <span id="round-status" class="round-status"><span class="status-dot"></span> SẴN SÀNG</span>
+          </div>
+          <ol id="combat-log" class="combat-log" aria-live="polite" aria-relevant="additions text" aria-label="Nhật ký chiến đấu">
+            <li class="log-placeholder">Chọn phong cách chiến đấu để bắt đầu nhiệm vụ.</li>
+          </ol>
+        </section>
+
+        <section id="result-panel" class="result-panel" aria-labelledby="result-title" aria-live="polite" hidden>
+          <div class="result-copy">
+            <p id="result-eyebrow" class="eyebrow">NHIỆM VỤ HOÀN TẤT</p>
+            <h3 id="result-title" tabindex="-1">CHIẾN THẮNG</h3>
+            <p id="result-message"></p>
+            <span id="result-turns" class="result-turns"></span>
+          </div>
+          <div class="result-actions">
+            <button id="rematch-button" class="primary-button" type="button"><span>ĐÁNH TRẬN MỚI</span><span class="button-arrow" aria-hidden="true">↗</span></button>
+            <button id="change-class-button" class="secondary-button" type="button">ĐỔI LỚP ANH HÙNG</button>
+          </div>
+        </section>
+      </section>
+
+      <footer class="page-footer">
+        <span>AVENGER INITIATIVE · TRAINING DIVISION</span>
+        <span>JAVA SCRIPT ROLE-PLAYING GAME</span>
+        <span id="footer-student">AVENGER INITIATIVE / 01</span>
+      </footer>
+    </main>
+  </body>
+</html>
